@@ -20,18 +20,14 @@ messages = [
         SystemMessage(
             content=(
                 "You are a QA assisting agent. "
-                "You have access to a acceptance criteria tool for acceptance criteria creation and test cases creation tool for test case creation  \n\n"
+                "You have access to a acceptance criteria tool for acceptance criteria creation and test cases creation tool for test case creation and fetch user story tool to fetch user stories  \n\n"
 
                 "STRICT RULES — you must follow these exactly:\n"
                 "1. NEVER guess or assume any outcome of the tool.\n"
                 "2. ALWAYS use the specific tool when you need to create.\n"
             )
         ),
-        HumanMessage(content="create acceptance criteria and test cases for the following user story \n"
-                            "user_story: Update email body to :Thank you for your contribution to the Creditsafe Risk Intelligence Network. Our team will review the information you have provided and will share the findings of our investigation with you within the next 30 days.\n"
-                            "I can make this change in Locize, but wasn't sure if we wanted to update code too? That way, we do not need to translate the other English languages.\n"
-                            "Italicise the footer text\n"
-                            "Could we add a thin red border above too, so that there is clear separated from the email content?")
+        HumanMessage(content="fetch user stories and details of the current sprint")
 
     ]
 
