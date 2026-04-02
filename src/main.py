@@ -1,10 +1,18 @@
+import sys
+from pathlib import Path
+
+# Add project root to Python path so we can import tools
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
-from langchain_ollama import ChatOllama
 from langchain.tools import tool
-from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
+from tools.acceptance_criteria import create_acceptance_criteria as ac_func
+from tools.test_cases import create_test_cases as tc_func
 
 load_dotenv()
 
@@ -35,16 +43,7 @@ def create_acceptance_criteria(user_story: str) -> str:
     Create acceptance criteria for a given user_story.
     only use this tool to create acceptance criteria, do not use this tool for any other purpose.
     """
-    
-    with open("prompts/acceptance_criteria.txt", "r") as file:
-        prompt_template = file.read()
-
-    prompt = PromptTemplate(template=prompt_template, input_variables=["user_story"])
-    chain = prompt | llm
-    response = chain.invoke({"user_story": user_story})
-    print(response)
-
-    return response
+    return ac_func(user_story)
 
 @tool
 def create_test_cases(acceptance_criteria: str) -> str:
@@ -52,16 +51,7 @@ def create_test_cases(acceptance_criteria: str) -> str:
     Create test cases for a given acceptance criteria.
     only use this tool to create test cases, do not use this tool for any other purpose.
     """
-    
-    with open("prompts/test_cases.txt", "r") as file:
-        prompt_template = file.read()
-
-    prompt = PromptTemplate(template=prompt_template, input_variables=["acceptance_criteria"])
-    chain = prompt | llm
-    response = chain.invoke({"acceptance_criteria": acceptance_criteria})
-    print(response)
-
-    return response
+    return tc_func(acceptance_criteria)
 
 
 tools=[create_acceptance_criteria, create_test_cases]
