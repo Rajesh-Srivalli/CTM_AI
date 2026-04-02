@@ -1,14 +1,45 @@
 from dotenv import load_dotenv
-from langchain_core.prompts import PromptTemplate
-from langchain_ollama import ChatOllama
-from langchain.tools import tool
-from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
-from langchain.agents import create_agent
+import asyncio
+import sys
+import os
+from pathlib import Path
 from langchain_openai import ChatOpenAI
+from langchain.agents import create_agent
 
-load_dotenv()
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
-messages = [
+
+async def main():
+
+    load_dotenv()
+    llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free", temperature=0.2)
+
+    # Get the path to the current Python executable (venv)
+    python_executable = sys.executable
+    mcp_server_path = str(Path(__file__).parent.parent / "mcp_server" / "server.py")
+
+    # connect to your MCP server using stdio transport
+    client = MultiServerMCPClient(
+        {
+            "qa_tools": {
+                "transport": "stdio",
+                "command": python_executable,
+                "args": [mcp_server_path],
+            }
+        }
+    )
+
+    # load MCP tools into LangChain
+    tools = await client.get_tools()
+    
+    agent = create_agent(
+        model=llm,
+        tools=tools
+    )
+
+    messages = [
         SystemMessage(
             content=(
                 "You are a QA assisting agent. "
@@ -27,53 +58,9 @@ messages = [
 
     ]
 
-llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free",  temperature=0.2)
-
-@tool
-def create_acceptance_criteria(user_story: str) -> str:
-    """
-    Create acceptance criteria for a given user_story.
-    only use this tool to create acceptance criteria, do not use this tool for any other purpose.
-    """
-    
-    with open("prompts/acceptance_criteria.txt", "r") as file:
-        prompt_template = file.read()
-
-    prompt = PromptTemplate(template=prompt_template, input_variables=["user_story"])
-    chain = prompt | llm
-    response = chain.invoke({"user_story": user_story})
+    response = await agent.ainvoke({"messages": messages})
     print(response)
-
-    return response
-
-@tool
-def create_test_cases(acceptance_criteria: str) -> str:
-    """
-    Create test cases for a given acceptance criteria.
-    only use this tool to create test cases, do not use this tool for any other purpose.
-    """
-    
-    with open("prompts/test_cases.txt", "r") as file:
-        prompt_template = file.read()
-
-    prompt = PromptTemplate(template=prompt_template, input_variables=["acceptance_criteria"])
-    chain = prompt | llm
-    response = chain.invoke({"acceptance_criteria": acceptance_criteria})
-    print(response)
-
-    return response
-
-
-tools=[create_acceptance_criteria, create_test_cases]
-
-agent = create_agent(
-    model=llm,
-    tools=tools,
-)
-
-def main():
-    result = agent.invoke({"messages": messages})
-    print(result)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
+

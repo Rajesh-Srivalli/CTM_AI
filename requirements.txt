@@ -2,4 +2,8 @@ python-dotenv
 langchain-core
 langchain-ollama
 langchain
+langchain-openai
 pydantic
+mcp
+fastmcp
+langchain-mcp-adapters
