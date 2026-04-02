@@ -1,4 +1,4 @@
-create test cases for the acceptance criteria
+create test cases for the {acceptance_criteria}
 
 striclty follow the rules.
 

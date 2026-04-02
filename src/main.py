@@ -12,11 +12,11 @@ messages = [
         SystemMessage(
             content=(
                 "You are a QA assisting agent. "
-                "You have access to a acceptance criteria tool and test cases creation tool  \n\n"
+                "You have access to a acceptance criteria tool for acceptance criteria creation and test cases creation tool for test case creation  \n\n"
 
                 "STRICT RULES — you must follow these exactly:\n"
                 "1. NEVER guess or assume any outcome of the tool.\n"
-                "2. ask them which tier to use — do NOT assume one.\n"
+                "2. ALWAYS use the specific tool when you need to create.\n"
             )
         ),
         HumanMessage(content="create acceptance criteria and test cases for the following user story \n"
@@ -33,14 +33,15 @@ llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free",  temperature=0.2)
 def create_acceptance_criteria(user_story: str) -> str:
     """
     Create acceptance criteria for a given user_story.
+    only use this tool to create acceptance criteria, do not use this tool for any other purpose.
     """
     
     with open("prompts/acceptance_criteria.txt", "r") as file:
         prompt_template = file.read()
 
-    prompt = PromptTemplate(template=prompt_template, input_variables=["input"])
+    prompt = PromptTemplate(template=prompt_template, input_variables=["user_story"])
     chain = prompt | llm
-    response = chain.invoke({"input": user_story})
+    response = chain.invoke({"user_story": user_story})
     print(response)
 
     return response
@@ -49,14 +50,15 @@ def create_acceptance_criteria(user_story: str) -> str:
 def create_test_cases(acceptance_criteria: str) -> str:
     """
     Create test cases for a given acceptance criteria.
+    only use this tool to create test cases, do not use this tool for any other purpose.
     """
     
     with open("prompts/test_cases.txt", "r") as file:
         prompt_template = file.read()
 
-    prompt = PromptTemplate(template=prompt_template, input_variables=["input"])
+    prompt = PromptTemplate(template=prompt_template, input_variables=["acceptance_criteria"])
     chain = prompt | llm
-    response = chain.invoke({"input": acceptance_criteria})
+    response = chain.invoke({"acceptance_criteria": acceptance_criteria})
     print(response)
 
     return response

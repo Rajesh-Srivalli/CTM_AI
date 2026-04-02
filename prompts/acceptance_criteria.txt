@@ -1,4 +1,4 @@
-create acceptance criterias for the provided user story
+create acceptance criterias for the provided {user_story}
 
 please strictly follow the below rules. 
 1. Do not consider API testing.
