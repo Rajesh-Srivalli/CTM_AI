@@ -1,0 +1,8 @@
+create test cases for the acceptance criteria
+
+striclty follow the rules.
+
+rules:
+1. Test case should only contain title as same as scenario of acceptance criteria
+2. Do not include any other details.
+3. Do not hallucinate

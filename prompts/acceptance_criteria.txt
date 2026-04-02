@@ -1,0 +1,8 @@
+create acceptance criterias for the provided user story
+
+please strictly follow the below rules. 
+1. Do not consider API testing.
+2. create acceptance criteria in gherkin format.
+3. create simplified and yet detailed acceptance criterias.
+4. Do not add feature in the acceptance criteria
+5. Do not hallucinate
