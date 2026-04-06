@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 load_dotenv()
-llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free",  temperature=0.2)
+llm = ChatOpenAI(model="nvidia/nemotron-3-super-120b-a12b:free",  temperature=0.2)
 
 def create_acceptance_criteria(user_story: str) -> str:
     
