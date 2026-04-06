@@ -14,7 +14,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 async def main():
 
     load_dotenv()
-    llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free", temperature=0.2)
+    llm = ChatOpenAI(model="nvidia/nemotron-3-super-120b-a12b:free", temperature=0.2)
 
     # Get the path to the current Python executable (venv)
     python_executable = sys.executable
