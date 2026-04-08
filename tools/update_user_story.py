@@ -3,19 +3,18 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 load_dotenv()
-#llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
-#llm = ChatOllama(model="gemma3:270m", temperature=0.2)
 from azure.devops.connection import Connection
 from msrest.authentication import BasicAuthentication
 from azure.devops.v7_1.work_item_tracking.models import JsonPatchOperation
 from pprint import pprint
 from typing import List, Tuple
+import os
 
 def update_user_story(user_story_id: List[int], acceptance_criteria: List[str], test_cases: List[str] ) -> str:
     
     # organization_url = "https://dev.azure.com/YOUR_ORG"
     # project = "UPP"
-    # pat = "YOUR_PAT"
+    # pat = "os.getenv('ADO_PAT')"
 
     # credentials = BasicAuthentication('', pat)
     # connection = Connection(base_url=organization_url, creds=credentials)

@@ -3,19 +3,18 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 load_dotenv()
-#llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
-#llm = ChatOllama(model="gemma3:270m", temperature=0.2)
 from azure.devops.connection import Connection
 from msrest.authentication import BasicAuthentication
 from pprint import pprint
 from typing import List, Tuple
+import os
 
 def fetch_user_story() -> Tuple[List[str], List[int]]:
     # organization_url = "https://dev.azure.com/creditsafe"
     # project = "UPP"
     # team = "UPP Team"
     # iteration_path = "IPP\\Welcome Nikhil"   # Example: ProjectName\Sprint 5
-    # pat = "YOUR_PERSONAL_ACCESS_TOKEN"
+    # pat = "os.getenv('ADO_PAT')"
     # credentials = BasicAuthentication('', pat)
 
     # connection = Connection(base_url=organization_url, creds=credentials)

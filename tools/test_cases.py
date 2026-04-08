@@ -1,10 +1,11 @@
+import os
+
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 load_dotenv()
-#llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
-llm = ChatOllama(model="qwen2.5:3b", temperature=0.1,num_predict=96,top_p=0.9)
+llm = ChatOpenAI(model=os.getenv("LLM_MODEL"), temperature=0.2)
 from typing import List
 
 def create_test_cases(acceptance_criterias: List[str]) -> List[str]:
