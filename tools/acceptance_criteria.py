@@ -2,15 +2,16 @@ from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 load_dotenv()
-llm = ChatOpenAI(model="nvidia/nemotron-3-super-120b-a12b:free",  temperature=0.2)
+llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+from typing import List
 
-def create_acceptance_criteria(user_story: str) -> str:
+def create_acceptance_criteria(user_stories: List[str]) -> List[str]:
     
+    print("user stories", user_stories[0])
     with open("prompts/acceptance_criteria.txt", "r") as file:
         prompt_template = file.read()
-    prompt = PromptTemplate(template=prompt_template, input_variables=["user_story"])
+    prompt = PromptTemplate(template=prompt_template, input_variables=["user_stories"])
     chain = prompt | llm
-    response = chain.invoke({"user_story": user_story})
-    print("acceptance_criteria", response)
+    response = chain.invoke({"user_stories": user_stories})
 
     return response

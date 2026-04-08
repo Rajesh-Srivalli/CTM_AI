@@ -6,66 +6,50 @@ llm = ChatOpenAI(model="qwen/qwen3.6-plus-preview:free",  temperature=0.2)
 from azure.devops.connection import Connection
 from msrest.authentication import BasicAuthentication
 from pprint import pprint
+from typing import List
 
-def fetch_user_story() -> str:
-    organization_url = "https://dev.azure.com/YOUR_ORG"
-    project = "YOUR_PROJECT_NAME"
-    team = "YOUR_TEAM_NAME"
-    iteration_path = "YOUR_PROJECT_NAME\\Sprint 5"   # Example: ProjectName\Sprint 5
-    pat = "YOUR_PERSONAL_ACCESS_TOKEN"
+def fetch_user_story() -> List[str]:
+    # organization_url = "https://dev.azure.com/creditsafe"
+    # project = "UPP"
+    # team = "UPP Team"
+    # iteration_path = "IPP\\Welcome Nikhil"   # Example: ProjectName\Sprint 5
+    # pat = "YOUR_PERSONAL_ACCESS_TOKEN"
+    # credentials = BasicAuthentication('', pat)
 
-    # ----------------------------------------------------
-    # AUTHENTICATION
-    # ----------------------------------------------------
-    credentials = BasicAuthentication('', pat)
-    connection = Connection(base_url=organization_url, creds=credentials)
+    # connection = Connection(base_url=organization_url, creds=credentials)
+    # wit_client = connection.clients.get_work_item_tracking_client()
+    # core_client = connection.clients.get_core_client()
 
-    wit_client = connection.clients.get_work_item_tracking_client()
-    core_client = connection.clients.get_core_client()
+    # wiql_query = f"""
+    # SELECT
+    #     [System.Id],
+    #     [System.Title],
+    #     [System.State],
+    #     [System.WorkItemType]
+    # FROM workitems
+    # WHERE
+    #     [System.IterationPath] = '{iteration_path}'
+    # ORDER BY [System.Id]
+    # """
 
-    # ----------------------------------------------------
-    # STEP 1: Run WIQL through SDK to get work item IDs
-    # ----------------------------------------------------
-    wiql_query = f"""
-    SELECT
-        [System.Id],
-        [System.Title],
-        [System.State],
-        [System.WorkItemType]
-    FROM workitems
-    WHERE
-        [System.IterationPath] = '{iteration_path}'
-    ORDER BY [System.Id]
-    """
+    # wiql = {"query": wiql_query}
+    # wiql_results = wit_client.query_by_wiql(wiql, project=project)
 
-    wiql = {"query": wiql_query}
+    # work_item_ids = [item.id for item in wiql_results.work_items]
 
-    print("🔍 Fetching work item IDs...")
-    wiql_results = wit_client.query_by_wiql(wiql, project=project)
+    # work_items = wit_client.get_work_items(ids=work_item_ids, expand="All")
 
-    if not wiql_results.work_items:
-        print("⚠️ No work items found for sprint:", iteration_path)
-        exit()
-
-    work_item_ids = [item.id for item in wiql_results.work_items]
-    print(f"✅ Found {len(work_item_ids)} work items")
-
-    # ----------------------------------------------------
-    # STEP 2: Get full details for each work item
-    # ----------------------------------------------------
-    print("\n📌 Fetching full work item details...\n")
-    work_items = wit_client.get_work_items(ids=work_item_ids, expand="All")
-
-    for item in work_items:
-        fields = item.fields
-        print("--------------------------------------")
-        print(f"ID: {item.id}")
-        print(f"Type: {fields.get('System.WorkItemType')}")
-        print(f"Title: {fields.get('System.Title')}")
-        print(f"State: {fields.get('System.State')}")
-        print(f"Assigned To: {fields.get('System.AssignedTo').display_name if fields.get('System.AssignedTo') else None}")
-        print(f"Iteration: {fields.get('System.IterationPath')}")
-        print(f"Tags: {fields.get('System.Tags')}")
+    # for item in work_items:
+    #     fields = item.fields
+    #     print(f"ID: {item.id}")
+    #     print(f"Type: {fields.get('System.WorkItemType')}")
+    #     print(f"Title: {fields.get('System.Title')}")
+    #     print(f"State: {fields.get('System.State')}")
+    #     print(f"Assigned To: {fields.get('System.AssignedTo').display_name if fields.get('System.AssignedTo') else None}")
+    #     print(f"Iteration: {fields.get('System.IterationPath')}")
+    #     print(f"Tags: {fields.get('System.Tags')}")
+    #     description = fields.get("System.Description", "")
+    return ["As an application user, when I click the login button the login page should appear and home page should load and logo should be visible", "As an application user, when I click the logout button the logout page should appear","As an application user, after logging in, I should see the dashboard"]
 
         
         

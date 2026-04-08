@@ -1,4 +1,4 @@
-create test cases for the {acceptance_criteria}
+create list of test cases for the proovided list of {acceptance_criterias}
 
 striclty follow the rules.
 
@@ -6,3 +6,9 @@ rules:
 1. Test case should only contain title as same as scenario of acceptance criteria
 2. Do not include any other details.
 3. Do not hallucinate
+4. Create separate test cases for each acceptance criterion and present them as individual items in a list.
+5. Refer the below example to create the test cases list
+
+Example:
+input:[acceptance_criteria_1,acceptance_criteria_2,....]
+output:[[test_case_1_1,test_case_1_2],[test_case_2_1,test_case_2_2],...]

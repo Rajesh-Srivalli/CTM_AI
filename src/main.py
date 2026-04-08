@@ -1,6 +1,8 @@
 import sys
 from pathlib import Path
 
+from typing import List
+
 # Add project root to Python path so we can import tools
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -13,6 +15,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from tools.acceptance_criteria import create_acceptance_criteria as ac_func
 from tools.test_cases import create_test_cases as tc_func
+from tools.fetch_user_story import fetch_user_story as fu_func
 
 load_dotenv()
 
@@ -27,30 +30,37 @@ messages = [
                 "2. ALWAYS use the specific tool when you need to create.\n"
             )
         ),
-        HumanMessage(content="fetch user stories and details of the current sprint")
+        HumanMessage(content="create acceptance criteria and test cases for the user stories. Fetch the user stories from azure devops sprint boared")
 
     ]
 
-llm = ChatOpenAI(model="nvidia/nemotron-3-super-120b-a12b:free",  temperature=0.2)
+llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
 
 @tool
-def create_acceptance_criteria(user_story: str) -> str:
+def create_acceptance_criteria(user_stories: List[str]) -> str:
     """
     Create acceptance criteria for a given user_story.
     only use this tool to create acceptance criteria, do not use this tool for any other purpose.
     """
-    return ac_func(user_story)
+    return ac_func(user_stories)
 
 @tool
-def create_test_cases(acceptance_criteria: str) -> str:
+def create_test_cases(acceptance_criterias: List[str]) -> str:
     """
     Create test cases for a given acceptance criteria.
     only use this tool to create test cases, do not use this tool for any other purpose.
     """
-    return tc_func(acceptance_criteria)
+    return tc_func(acceptance_criterias)
 
+@tool
+def fetch_user_story() -> List[str]:
+    """
+    Fetch user stories from Azure DevOps.
+    only use this tool to fetch user stories, do not use this tool for any other purpose.
+    """
+    return fu_func()
 
-tools=[create_acceptance_criteria, create_test_cases]
+tools=[create_acceptance_criteria, create_test_cases, fetch_user_story]
 
 agent = create_agent(
     model=llm,
@@ -59,7 +69,6 @@ agent = create_agent(
 
 def main():
     result = agent.invoke({"messages": messages})
-    print(result)
 
 if __name__ == "__main__":
     main()

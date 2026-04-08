@@ -2,20 +2,17 @@ from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 load_dotenv()
-llm = ChatOpenAI(model="nvidia/nemotron-3-super-120b-a12b:free",  temperature=0.2)
+llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+from typing import List
 
-def create_test_cases(acceptance_criteria: str) -> str:
-    """
-    Create test cases for a given acceptance criteria.
-    only use this tool to create test cases, do not use this tool for any other purpose.
-    """
-    
+def create_test_cases(acceptance_criterias: List[str]) -> List[str]:
+
+    print("acceptance criterias", acceptance_criterias[0])
     with open("prompts/test_cases.txt", "r") as file:
         prompt_template = file.read()
 
-    prompt = PromptTemplate(template=prompt_template, input_variables=["acceptance_criteria"])
+    prompt = PromptTemplate(template=prompt_template, input_variables=["acceptance_criterias"])
     chain = prompt | llm
-    response = chain.invoke({"acceptance_criteria": acceptance_criteria})
-    print("testcase",response)
+    response = chain.invoke({"acceptance_criterias": acceptance_criterias})
 
     return response
