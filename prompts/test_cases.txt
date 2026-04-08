@@ -1,14 +1,32 @@
-create list of test cases for the proovided list of {acceptance_criterias}
+## Task
+Generate test cases from the acceptance criteria below. Each test case is only a title; the title must match the corresponding scenario.
 
-striclty follow the rules.
+## Input
+Acceptance criteria (replace or follow the placeholder):
+{acceptance_criterias}
 
-rules:
-1. Test case should only contain title as same as scenario of acceptance criteria
-2. Do not include any other details.
-3. Do not hallucinate
-4. Create separate test cases for each acceptance criterion and present them as individual items in a list.
-5. Refer the below example to create the test cases list
+## Output format
+- Return a list grouped by acceptance-criteria block, in the same order as the input.
+- For each acceptance-criteria block, output one test-case title per `Scenario:` .
+- Each test case is a single string: exactly the text of the `Scenario:` line after the keyword (trimmed), or the full scenario title as written on that line including any name after `Scenario:`.
 
-Example:
-input:[acceptance_criteria_1,acceptance_criteria_2,....]
-output:[[test_case_1_1,test_case_1_2],[test_case_2_1,test_case_2_2],...]
+## Rules
+1. Test case title = the scenario title only (the part that describes the scenario after `Scenario:`). Do not add prefixes like "Test:", step text, Given/When/Then, or IDs unless they appear in the scenario title itself.
+2. Do not add descriptions, steps, priority, preconditions, or any field other than the title.
+3. Do not invent scenarios or titles; derive only from the provided acceptance criteria.
+4. Keep acceptance-criteria blocks separate: the output list structure should mirror the input (one sub-list per acceptance-criteria item).
+
+## Example structure (illustrative)
+
+Input: [acceptance_criteria_1, acceptance_criteria_2, ...]
+
+Output (nested list, one inner list per acceptance-criteria block):
+```
+[
+  [test_case_for_scenario_1_of_ac_1, test_case_for_scenario_2_of_ac_1],
+  [test_case_for_scenario_1_of_ac_2, test_case_for_scenario_2_of_ac_2],
+  ...
+]
+```
+
+Use plain text ; keep grouping consistent with the example above.
