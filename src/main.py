@@ -13,6 +13,7 @@ from langchain.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from tools.acceptance_criteria import create_acceptance_criteria as ac_func
 from tools.test_cases import create_test_cases as tc_func
 from tools.fetch_user_story import fetch_user_story as fu_func
@@ -35,7 +36,8 @@ messages = [
 
     ]
 
-llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+#llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+llm = ChatOllama(model="qwen2.5:3b", temperature=0.1,num_predict=96,top_p=0.9)
 
 @tool
 def create_acceptance_criteria(user_stories: List[str]) -> str:

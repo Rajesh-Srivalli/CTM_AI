@@ -1,8 +1,10 @@
 from dotenv import load_dotenv
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 load_dotenv()
-llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+#llm = ChatOpenAI(model="google/gemma-4-26b-a4b-it:free",  temperature=0.2)
+#llm = ChatOllama(model="gemma3:270m", temperature=0.2)
 from azure.devops.connection import Connection
 from msrest.authentication import BasicAuthentication
 from pprint import pprint
