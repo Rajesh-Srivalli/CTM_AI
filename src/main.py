@@ -16,6 +16,7 @@ from langchain_openai import ChatOpenAI
 from tools.acceptance_criteria import create_acceptance_criteria as ac_func
 from tools.test_cases import create_test_cases as tc_func
 from tools.fetch_user_story import fetch_user_story as fu_func
+from tools.update_user_story import update_user_story as uu_func
 
 load_dotenv()
 
@@ -30,7 +31,7 @@ messages = [
                 "2. ALWAYS use the specific tool when you need to create.\n"
             )
         ),
-        HumanMessage(content="create acceptance criteria and test cases for the user stories. Fetch the user stories from azure devops sprint boared")
+        HumanMessage(content="create acceptance criteria and test cases for the user stories. Fetch the user stories and their ids from azure devops sprint board. Update the user story with acceptance criteria and test cases."),
 
     ]
 
@@ -55,10 +56,18 @@ def create_test_cases(acceptance_criterias: List[str]) -> str:
 @tool
 def fetch_user_story() -> List[str]:
     """
-    Fetch user stories from Azure DevOps.
+    Fetch user stories and their IDs from Azure DevOps.
     only use this tool to fetch user stories, do not use this tool for any other purpose.
     """
     return fu_func()
+
+@tool
+def update_user_story(user_story_id: List[int], acceptance_criteria: List[str], test_cases: List[str] ) -> None:
+    """
+    Update the user story with acceptance criteria and test cases in Azure DevOps.
+    only use this tool to update user stories, do not use this tool for any other purpose
+    """
+    return uu_func(user_story_id, acceptance_criteria, test_cases)
 
 tools=[create_acceptance_criteria, create_test_cases, fetch_user_story]
 
