@@ -37,7 +37,7 @@ messages = [
 
     ]
 
-llm = ChatOpenAI(model=os.getenv("LLM_MODEL"), temperature=0.2)
+llm = ChatOllama(model=os.getenv("LLM_MODEL"), num_ctx=2048,temperature=0)
 
 @tool
 def create_acceptance_criteria(user_stories: List[str]) -> str:
