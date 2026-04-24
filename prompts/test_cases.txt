@@ -1,32 +1,37 @@
 ## Task
-Generate test cases from the acceptance criteria below. Each test case is only a title; the title must match the corresponding scenario.
+Generate test-case titles from the acceptance criteria below.
 
 ## Input
-Acceptance criteria (replace or follow the placeholder):
+Acceptance criteria is provided as a LIST of BLOCKS.
+Each block may contain zero or more lines starting with `Scenario:`.
+
+Acceptance criteria blocks:
 {acceptance_criterias}
 
-## Output format
-- Return a list grouped by acceptance-criteria block, in the same order as the input.
-- For each acceptance-criteria block, output one test-case title per `Scenario:` .
-- Each test case is a single string: exactly the text of the `Scenario:` line after the keyword (trimmed), or the full scenario title as written on that line including any name after `Scenario:`.
+## Output format (STRICT)
+- Output MUST be a nested list (array of arrays).
+- There MUST be exactly one inner list per acceptance-criteria block, in the SAME ORDER as the input.
+- NEVER merge scenarios from different acceptance-criteria blocks into a single list.
 
 ## Rules
-1. Test case title = the scenario title only (the part that describes the scenario after `Scenario:`). Do not add prefixes like "Test:", step text, Given/When/Then, or IDs unless they appear in the scenario title itself.
-2. Do not add descriptions, steps, priority, preconditions, or any field other than the title.
-3. Do not invent scenarios or titles; derive only from the provided acceptance criteria.
-4. Keep acceptance-criteria blocks separate: the output list structure should mirror the input (one sub-list per acceptance-criteria item).
+1. For each acceptance-criteria block:
+   - Extract every line that starts with `Scenario:`
+   - For each such line, create exactly one test-case title
+2. Test-case title = only the text AFTER `Scenario:` (trim whitespace).
+3. Do NOT add:
+   - prefixes (e.g., Test, TC, ID)
+   - descriptions, steps, Given/When/Then
+   - invented or inferred scenarios
+4. If an acceptance-criteria block contains NO `Scenario:` lines, return an empty list `[]` for that block.
+5. Output plain text only.
 
-## Example structure (illustrative)
-
-Input: [acceptance_criteria_1, acceptance_criteria_2, ...]
-
-Output (nested list, one inner list per acceptance-criteria block):
-```
+## Output example (structure only)
 [
-  [test_case_for_scenario_1_of_ac_1, test_case_for_scenario_2_of_ac_1],
-  [test_case_for_scenario_1_of_ac_2, test_case_for_scenario_2_of_ac_2],
-  ...
+  ["Scenario title 1 from block 1", "Scenario title 2 from block 1"],
+  ["Scenario title 1 from block 2"],
+  []
 ]
-```
 
-Use plain text ; keep grouping consistent with the example above.
+IMPORTANT:
+- The number of inner lists MUST equal the number of acceptance-criteria blocks.
+- Keep scenario titles exactly as written after `Scenario:`.
