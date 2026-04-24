@@ -22,20 +22,21 @@ import os
 
 load_dotenv()
 
+
 messages = [
-        SystemMessage(
-            content=(
-                "You are a QA assisting agent. "
-                "You have access to a acceptance criteria tool for acceptance criteria creation and test cases creation tool for test case creation and fetch user story tool to fetch user stories  \n\n"
+    {
+        "role": "user",
+        "content": (
+            "Execute the task now.\n"
+            "Step 1: Fetch user stories from Azure DevOps.\n"
+            "Step 2: Create acceptance criteria for each story.\n"
+            "Step 3: Create test cases for each acceptance criteria.\n"
+            "Step 4: Update each user story with acceptance criteria and test cases.\n"
+            "Do not explain steps. Perform them using tools."
+        )
+    }
+]
 
-                "STRICT RULES — you must follow these exactly:\n"
-                "1. NEVER guess or assume any outcome of the tool.\n"
-                "2. ALWAYS use the specific tool when you need to create.\n"
-            )
-        ),
-        HumanMessage(content="create acceptance criteria and test cases for the user stories. Fetch the user stories and their ids from azure devops sprint board. Update the user story with acceptance criteria and test cases."),
-
-    ]
 
 llm = ChatOllama(model=os.getenv("LLM_MODEL"), num_ctx=2048,temperature=0)
 
@@ -45,6 +46,7 @@ def create_acceptance_criteria(user_stories: List[str]) -> str:
     Create acceptance criteria for a given user_story.
     only use this tool to create acceptance criteria, do not use this tool for any other purpose.
     """
+    print("creating acceptance criteria for user stories", user_stories[0])
     return ac_func(user_stories)
 
 @tool
@@ -71,13 +73,40 @@ def update_user_story(user_story_id: List[int], acceptance_criteria: List[str], 
     """
     return uu_func(user_story_id, acceptance_criteria, test_cases)
 
-tools=[create_acceptance_criteria, create_test_cases, fetch_user_story]
+tools=[create_acceptance_criteria, create_test_cases, fetch_user_story,update_user_story]
 
 agent = create_agent(
     model=llm,
     tools=tools,
-)
+    system_prompt=
+"""
 
+You are a QA assisting agent.
+
+You must execute tasks ONLY by calling tools.
+
+IMPORTANT DATA FLOW RULES:
+1. When a tool returns data, you MUST store it mentally and reuse it.
+2. The output of fetch_user_story MUST be passed as input to create_acceptance_criteria.
+3. The output of create_acceptance_criteria MUST be passed to create_test_cases.
+4. The outputs of fetch_user_story, create_acceptance_criteria, and create_test_cases MUST be passed to update_user_story.
+5. NEVER call a tool with empty arguments unless the previous tool returned empty data.
+
+Execution sequence:
+- Call fetch_user_story
+- Use its output as user_stories
+- Call create_acceptance_criteria
+- Use its output as acceptance_criterias
+- Call create_test_cases
+- Finally call update_user_story with all collected data
+
+Do not explain.`
+Do not summarize.
+Do not skip steps.
+
+
+"""
+)
 def main():
     result = agent.invoke({"messages": messages})
 
