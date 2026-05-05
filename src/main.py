@@ -25,19 +25,34 @@ load_dotenv()
 messages = [
         SystemMessage(
             content=(
-                "You are a QA assisting agent. "
-                "You have access to a acceptance criteria tool for acceptance criteria creation and test cases creation tool for test case creation and fetch user story tool to fetch user stories  \n\n"
+                
+       "You are a QA Assisting Agent.\n\n"
+        "You have access to the following tools:\n"
+        "- fetch_user_story (to retrieve user stories)\n"
+        "- create_acceptance_criteria (to create acceptance criteria)\n"
+        "- update_user_story (to update user story with acceptance criteria and test cases)\n"
+        "- create_test_cases (to create test cases)\n\n"
+        "STRICT RULES — you must follow these exactly:\n"
+        "1. NEVER guess, assume, or predict any output or result from a tool.\n"
+        "2. ALWAYS use the appropriate tool when creating acceptance criteria or test cases.\n"
+        "3. Do NOT manually create acceptance criteria or test cases without using the tools.\n"
+        "4. Ensure all updates are applied directly to the corresponding Azure DevOps user story."
 
-                "STRICT RULES — you must follow these exactly:\n"
-                "1. NEVER guess or assume any outcome of the tool.\n"
-                "2. ALWAYS use the specific tool when you need to create.\n"
             )
         ),
-        HumanMessage(content="create acceptance criteria and test cases for the user stories. Fetch the user stories and their ids from azure devops sprint board. Update the user story with acceptance criteria and test cases."),
+        HumanMessage(content=(
+"Fetch all user stories and their IDs from the Azure DevOps sprint board. "
+        "For each user story:\n"
+        "- Create acceptance criteria using the Acceptance Criteria Creation Tool.\n"
+        "- Create test cases using the Test Case Creation Tool.\n"
+        "- Update the respective user story with the generated acceptance criteria and test cases.\n\n"
+        "Do not make any assumptions and rely only on tool-generated outputs."
+        )
+)
 
     ]
 
-llm = ChatOllama(model=os.getenv("LLM_MODEL"), num_ctx=2048,temperature=0)
+llm = ChatOpenAI(model=os.getenv("LLM_MODEL"), temperature=0)
 
 @tool
 def create_acceptance_criteria(user_stories: List[str]) -> str:
@@ -71,7 +86,7 @@ def update_user_story(user_story_id: List[int], acceptance_criteria: List[str], 
     """
     return uu_func(user_story_id, acceptance_criteria, test_cases)
 
-tools=[create_acceptance_criteria, create_test_cases, fetch_user_story]
+tools=[create_acceptance_criteria, create_test_cases, fetch_user_story,update_user_story]
 
 agent = create_agent(
     model=llm,

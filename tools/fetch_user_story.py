@@ -50,7 +50,7 @@ def fetch_user_story() -> Tuple[List[str], List[int]]:
     #     print(f"Iteration: {fields.get('System.IterationPath')}")
     #     print(f"Tags: {fields.get('System.Tags')}")
     #     description = fields.get("System.Description", "")
-    return ["As an application user, when I click the login button the login page should appear and home page should load and logo should be visible", "As an application user, when I click the logout button the logout page should appear","As an application user, after logging in, I should see the dashboard"],[1,2,3]
+    return ["As an application user, when I click the login button the login page should appear. After logging with credentials, home page should load and logo should be visible", "As an application user, when I click the logout button the logout page should appear","As an application user, after logging in, I should see the dashboard"],[1,2,3]
 
         
         
